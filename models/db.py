@@ -62,7 +62,7 @@ def init_db():
             ("default_sender", ""),
             ("default_tone", "friendly"),
             ("default_template", "short_pitch"),
-            ("groq_model", "llama3-70b-8192"),
+            ("groq_model", "llama-3.3-70b-versatile"),
             ("groq_api_key", "");
     ''')
     db.commit()

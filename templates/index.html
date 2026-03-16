@@ -3,7 +3,7 @@
 {% block page_title %}✉️ Email Generator{% endblock %}
 
 {% block content %}
-<div class="gen-grid">
+<div class="gen-grid" id="gen-grid">
   <!-- Generator Form -->
   <div class="card">
     <h2 class="card-title">Generate Cold Email</h2>
@@ -123,6 +123,7 @@
         document.getElementById('result-subject').textContent = data.subject;
         document.getElementById('result-body').textContent = data.body;
         document.getElementById('result-panel').style.display = 'block';
+        document.getElementById('gen-grid').classList.add('has-result');
 
         const id = data.email_id;
         document.getElementById('export-txt').href  = `/export/${id}/txt`;

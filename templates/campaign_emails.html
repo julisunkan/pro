@@ -25,9 +25,10 @@
     <div class="email-subject">📌 {{ email.subject }}</div>
     <div class="email-body-preview">{{ email.body[:300] }}{% if email.body|length > 300 %}…{% endif %}</div>
     <div class="email-actions">
-      <a href="/export/{{ email.id }}/txt" class="btn btn-xs">📄 TXT</a>
+      <a href="/export/{{ email.id }}/txt"  class="btn btn-xs">📄 TXT</a>
       <a href="/export/{{ email.id }}/html" class="btn btn-xs">🌐 HTML</a>
-      <a href="/export/{{ email.id }}/pdf" class="btn btn-xs">📑 PDF</a>
+      <a href="/export/{{ email.id }}/pdf"  class="btn btn-xs">📑 PDF</a>
+      <a href="/export/{{ email.id }}/docx" class="btn btn-xs">📝 DOCX</a>
       {% if not email.opened %}
       <button class="btn btn-xs btn-secondary" onclick="markOpened({{ email.id }}, this)">Mark Opened</button>
       {% endif %}

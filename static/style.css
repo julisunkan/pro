@@ -194,16 +194,22 @@ body {
   margin-bottom: 24px;
 }
 
-/* Generator page — form takes 45%, result takes 55% */
+/* Generator page — single column by default, two columns when result is visible */
 .gen-grid {
+  display: block;
+  margin-bottom: 28px;
+}
+.gen-grid > .card {
+  margin-bottom: 24px;
+}
+.gen-grid.has-result {
   display: grid;
   grid-template-columns: 45fr 55fr;
   gap: 28px;
-  margin-bottom: 28px;
   align-items: start;
 }
-.gen-grid > :only-child {
-  grid-column: 1 / -1;
+.gen-grid.has-result > .card {
+  margin-bottom: 0;
 }
 
 /* ─────────────────────────────────────────────
