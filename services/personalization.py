@@ -39,7 +39,8 @@ def generate_personalized_intro(lead_name: str, company: str, context: str) -> s
             json=payload,
             timeout=15
         )
-        resp.raise_for_status()
+        if not resp.ok:
+            raise ValueError(f'Groq API error {resp.status_code}')
         intro = resp.json()['choices'][0]['message']['content'].strip().strip('"')
         return intro
     except Exception:

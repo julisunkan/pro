@@ -46,9 +46,10 @@
       <div class="form-group">
         <label for="groq_model">Groq Model</label>
         <select id="groq_model" name="groq_model">
-          <option value="llama3-70b-8192" {% if settings.get('groq_model','llama3-70b-8192') == 'llama3-70b-8192' %}selected{% endif %}>llama3-70b-8192 (default)</option>
-          <option value="llama3-8b-8192" {% if settings.get('groq_model') == 'llama3-8b-8192' %}selected{% endif %}>llama3-8b-8192 (faster)</option>
-          <option value="mixtral-8x7b-32768" {% if settings.get('groq_model') == 'mixtral-8x7b-32768' %}selected{% endif %}>mixtral-8x7b-32768</option>
+          <option value="llama-3.3-70b-versatile" {% if settings.get('groq_model','llama-3.3-70b-versatile') in ('llama-3.3-70b-versatile','llama3-70b-8192','') %}selected{% endif %}>llama-3.3-70b-versatile (default)</option>
+          <option value="llama-3.1-70b-versatile" {% if settings.get('groq_model') == 'llama-3.1-70b-versatile' %}selected{% endif %}>llama-3.1-70b-versatile</option>
+          <option value="llama-3.1-8b-instant" {% if settings.get('groq_model') in ('llama-3.1-8b-instant','llama3-8b-8192') %}selected{% endif %}>llama-3.1-8b-instant (faster)</option>
+          <option value="llama3-70b-8192" {% if settings.get('groq_model') == 'llama3-70b-8192' %}selected{% endif %}>llama3-70b-8192 (legacy)</option>
         </select>
       </div>
       <div class="form-row">

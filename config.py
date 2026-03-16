@@ -2,7 +2,7 @@ import os
 
 # Groq API
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
-GROQ_MODEL = 'llama3-70b-8192'
+GROQ_MODEL = 'llama-3.3-70b-versatile'
 
 # Flask
 SECRET_KEY = os.environ.get('SECRET_KEY', 'cold-email-secret-2024')

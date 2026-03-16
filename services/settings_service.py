@@ -28,5 +28,12 @@ def get_api_key() -> str:
 
 
 def get_model() -> str:
-    """Return the Groq model from settings."""
-    return get_setting('groq_model', config.GROQ_MODEL)
+    """Return the Groq model from settings, remapping deprecated names."""
+    model = get_setting('groq_model', config.GROQ_MODEL)
+    # Remap deprecated model names to current equivalents
+    _deprecated = {
+        'llama3-70b-8192': 'llama-3.3-70b-versatile',
+        'llama3-8b-8192': 'llama-3.1-8b-instant',
+        'mixtral-8x7b-32768': 'llama-3.3-70b-versatile',
+    }
+    return _deprecated.get(model, model) or config.GROQ_MODEL

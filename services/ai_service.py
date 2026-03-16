@@ -91,7 +91,15 @@ def generate_email(product, audience, pain_point, tone, template_type,
         json=payload,
         timeout=30
     )
-    response.raise_for_status()
+
+    if not response.ok:
+        # Extract Groq's error message for clear user feedback
+        try:
+            err = response.json()
+            msg = err.get('error', {}).get('message', response.text)
+        except Exception:
+            msg = response.text
+        raise ValueError(f'Groq API error ({response.status_code}): {msg}')
 
     text = response.json()['choices'][0]['message']['content'].strip()
 
