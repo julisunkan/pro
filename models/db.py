@@ -34,6 +34,7 @@ def init_db():
             id            INTEGER PRIMARY KEY AUTOINCREMENT,
             name          TEXT NOT NULL,
             product       TEXT NOT NULL,
+            pain_point    TEXT DEFAULT "",
             template_type TEXT DEFAULT "short_pitch",
             tone          TEXT DEFAULT "friendly",
             sender        TEXT DEFAULT "",
@@ -65,4 +66,16 @@ def init_db():
             ("groq_api_key", "");
     ''')
     db.commit()
+
+    # Migrations: add columns introduced after initial schema
+    migrations = [
+        'ALTER TABLE campaigns ADD COLUMN pain_point TEXT DEFAULT ""',
+    ]
+    for sql in migrations:
+        try:
+            db.execute(sql)
+            db.commit()
+        except Exception:
+            pass  # Column already exists
+
     db.close()

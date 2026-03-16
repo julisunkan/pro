@@ -4,7 +4,7 @@ import csv
 import json
 from flask import (
     Flask, render_template, request, redirect, url_for,
-    flash, jsonify, send_file, make_response
+    flash, jsonify, send_file, make_response, g
 )
 from models.db import init_db, get_db
 from services.ai_service import generate_email
@@ -21,6 +21,14 @@ app.secret_key = os.environ.get('SECRET_KEY', 'cold-email-secret-key-2024')
 # Initialize database on startup
 with app.app_context():
     init_db()
+
+
+@app.teardown_appcontext
+def close_db(error):
+    """Close the database connection at the end of each request."""
+    db = g.pop('db', None)
+    if db is not None:
+        db.close()
 
 
 # ─────────────────────────────────────────────
@@ -53,12 +61,17 @@ def generate():
     try:
         result = generate_email(product, audience, pain_point, tone, template_type, sender=sender)
         db = get_db()
-        db.execute(
+        cursor = db.execute(
             'INSERT INTO emails (campaign_id, lead_id, subject, body) VALUES (?, ?, ?, ?)',
             (None, None, result['subject'], result['body'])
         )
         db.commit()
-        return jsonify({'success': True, 'subject': result['subject'], 'body': result['body']})
+        return jsonify({
+            'success': True,
+            'subject': result['subject'],
+            'body': result['body'],
+            'email_id': cursor.lastrowid
+        })
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
 
@@ -128,6 +141,7 @@ def campaigns():
 def create_campaign_route():
     name = request.form.get('name', '').strip()
     product = request.form.get('product', '').strip()
+    pain_point = request.form.get('pain_point', '').strip()
     template_type = request.form.get('template_type', 'short_pitch')
     tone = request.form.get('tone', 'friendly')
     sender = request.form.get('sender', '').strip()
@@ -136,7 +150,7 @@ def create_campaign_route():
         return jsonify({'success': False, 'message': 'Campaign name and product are required.'})
 
     try:
-        campaign_id = create_campaign(name, product, template_type, tone, sender)
+        campaign_id = create_campaign(name, product, template_type, tone, sender, pain_point)
         return jsonify({'success': True, 'message': f'Campaign "{name}" created.', 'campaign_id': campaign_id})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
@@ -172,7 +186,7 @@ def run_campaign(campaign_id):
                 result = generate_email(
                     campaign['product'],
                     lead['company'] or 'your company',
-                    campaign['product'],
+                    campaign['pain_point'] or f'growing {lead["company"] or "their business"}',
                     campaign['tone'],
                     campaign['template_type'],
                     lead_name=lead['name'],
@@ -202,6 +216,9 @@ def run_campaign(campaign_id):
 def campaign_emails(campaign_id):
     db = get_db()
     campaign = db.execute('SELECT * FROM campaigns WHERE id = ?', (campaign_id,)).fetchone()
+    if not campaign:
+        flash('Campaign not found.', 'error')
+        return redirect(url_for('campaigns'))
     emails = db.execute(
         'SELECT e.*, l.name as lead_name, l.email as lead_email, l.company '
         'FROM emails e LEFT JOIN leads l ON e.lead_id = l.id '

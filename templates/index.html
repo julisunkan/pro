@@ -61,7 +61,7 @@
       <label>Body</label>
       <div class="result-box result-body" id="result-body"></div>
     </div>
-    <div class="export-buttons">
+    <div class="export-buttons" id="export-buttons" style="display:none">
       <a id="export-txt" href="#" class="btn btn-secondary">📄 TXT</a>
       <a id="export-html" href="#" class="btn btn-secondary">🌐 HTML</a>
       <a id="export-pdf" href="#" class="btn btn-secondary">📑 PDF</a>
@@ -107,8 +107,6 @@
 
 {% block scripts %}
 <script>
-  let lastEmailId = null;
-
   document.getElementById('gen-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('gen-btn');
@@ -123,10 +121,17 @@
         document.getElementById('result-subject').textContent = data.subject;
         document.getElementById('result-body').textContent = data.body;
         document.getElementById('result-panel').style.display = 'block';
+
+        // Wire up export links immediately using the returned email ID
+        const id = data.email_id;
+        document.getElementById('export-txt').href  = `/export/${id}/txt`;
+        document.getElementById('export-html').href = `/export/${id}/html`;
+        document.getElementById('export-pdf').href  = `/export/${id}/pdf`;
+        document.getElementById('export-buttons').style.display = 'flex';
+
         showMessage('Email generated successfully!', 'success');
-        // Update export links after getting the ID from a fresh page load isn't possible here
-        // so we store the latest email and reload
-        setTimeout(() => location.reload(), 1500);
+        // Reload the recent-emails table in the background after a short delay
+        setTimeout(() => location.reload(), 3000);
       } else {
         showMessage(data.message || 'Generation failed.', 'error');
       }
