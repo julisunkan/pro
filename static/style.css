@@ -145,7 +145,6 @@ body {
   flex: 1;
   padding: 36px 40px;
   min-height: 100vh;
-  max-width: 1160px;
 }
 
 .topbar { margin-bottom: 28px; padding-bottom: 16px; border-bottom: 2px solid var(--border); }
@@ -193,6 +192,18 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   margin-bottom: 24px;
+}
+
+/* Generator page — form takes 45%, result takes 55% */
+.gen-grid {
+  display: grid;
+  grid-template-columns: 45fr 55fr;
+  gap: 28px;
+  margin-bottom: 28px;
+  align-items: start;
+}
+.gen-grid > :only-child {
+  grid-column: 1 / -1;
 }
 
 /* ─────────────────────────────────────────────

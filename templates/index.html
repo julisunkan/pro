@@ -3,7 +3,7 @@
 {% block page_title %}✉️ Email Generator{% endblock %}
 
 {% block content %}
-<div class="two-col">
+<div class="gen-grid">
   <!-- Generator Form -->
   <div class="card">
     <h2 class="card-title">Generate Cold Email</h2>
@@ -62,9 +62,10 @@
       <div class="result-box result-body" id="result-body"></div>
     </div>
     <div class="export-buttons" id="export-buttons" style="display:none">
-      <a id="export-txt" href="#" class="btn btn-secondary">📄 TXT</a>
+      <a id="export-txt"  href="#" class="btn btn-secondary">📄 TXT</a>
       <a id="export-html" href="#" class="btn btn-secondary">🌐 HTML</a>
-      <a id="export-pdf" href="#" class="btn btn-secondary">📑 PDF</a>
+      <a id="export-pdf"  href="#" class="btn btn-secondary">📑 PDF</a>
+      <a id="export-docx" href="#" class="btn btn-secondary">📝 DOCX</a>
     </div>
   </div>
 </div>
@@ -92,9 +93,10 @@
           <td>{{ e.campaign_name or '—' }}</td>
           <td>{{ e.created_at[:16] }}</td>
           <td>
-            <a href="/export/{{ e.id }}/txt" class="btn btn-xs">TXT</a>
+            <a href="/export/{{ e.id }}/txt"  class="btn btn-xs">TXT</a>
             <a href="/export/{{ e.id }}/html" class="btn btn-xs">HTML</a>
-            <a href="/export/{{ e.id }}/pdf" class="btn btn-xs">PDF</a>
+            <a href="/export/{{ e.id }}/pdf"  class="btn btn-xs">PDF</a>
+            <a href="/export/{{ e.id }}/docx" class="btn btn-xs">DOCX</a>
           </td>
         </tr>
         {% endfor %}
@@ -122,15 +124,14 @@
         document.getElementById('result-body').textContent = data.body;
         document.getElementById('result-panel').style.display = 'block';
 
-        // Wire up export links immediately using the returned email ID
         const id = data.email_id;
         document.getElementById('export-txt').href  = `/export/${id}/txt`;
         document.getElementById('export-html').href = `/export/${id}/html`;
         document.getElementById('export-pdf').href  = `/export/${id}/pdf`;
+        document.getElementById('export-docx').href = `/export/${id}/docx`;
         document.getElementById('export-buttons').style.display = 'flex';
 
         showMessage('Email generated successfully!', 'success');
-        // Reload the recent-emails table in the background after a short delay
         setTimeout(() => location.reload(), 3000);
       } else {
         showMessage(data.message || 'Generation failed.', 'error');

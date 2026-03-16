@@ -12,7 +12,7 @@ from services.lead_scraper import scrape_website
 from services.personalization import generate_personalized_intro
 from services.campaign_service import create_campaign, get_campaign_leads
 from services.analytics import get_campaign_analytics
-from services.export_service import export_email_txt, export_email_html, export_email_pdf
+from services.export_service import export_email_txt, export_email_html, export_email_pdf, export_email_docx
 import config
 
 app = Flask(__name__)
@@ -297,6 +297,14 @@ def export_email(email_id, fmt):
         pdf_bytes, mimetype, filename = export_email_pdf(subject, body)
         return send_file(
             io.BytesIO(pdf_bytes),
+            mimetype=mimetype,
+            as_attachment=True,
+            download_name=filename
+        )
+    elif fmt == 'docx':
+        docx_bytes, mimetype, filename = export_email_docx(subject, body)
+        return send_file(
+            io.BytesIO(docx_bytes),
             mimetype=mimetype,
             as_attachment=True,
             download_name=filename

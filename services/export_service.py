@@ -1,4 +1,7 @@
 from fpdf import FPDF
+from docx import Document
+from docx.shared import Pt, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 # A4 page: 210mm wide, margins 20mm each side → 170mm usable
 PAGE_W = 170
@@ -110,3 +113,39 @@ def export_email_pdf(subject: str, body: str):
 
     pdf_bytes = pdf.output()
     return bytes(pdf_bytes), 'application/pdf', 'email.pdf'
+
+
+def export_email_docx(subject: str, body: str):
+    """Return (bytes, mimetype, filename) for DOCX export."""
+    doc = Document()
+
+    # Page margins
+    for section in doc.sections:
+        section.top_margin    = Pt(72)
+        section.bottom_margin = Pt(72)
+        section.left_margin   = Pt(72)
+        section.right_margin  = Pt(72)
+
+    # Subject heading
+    subj_para = doc.add_paragraph()
+    subj_run  = subj_para.add_run(f"Subject: {subject}")
+    subj_run.bold      = True
+    subj_run.font.size = Pt(14)
+    subj_run.font.color.rgb = RGBColor(0x33, 0x33, 0x33)
+
+    # Divider
+    doc.add_paragraph('─' * 60)
+
+    # Body paragraphs
+    for line in body.split('\n'):
+        p = doc.add_paragraph(line)
+        p.paragraph_format.space_after = Pt(0)
+        for run in p.runs:
+            run.font.size = Pt(11)
+
+    import io as _io
+    buf = _io.BytesIO()
+    doc.save(buf)
+    buf.seek(0)
+    mime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    return buf.read(), mime, 'email.docx'
