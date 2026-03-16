@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ campaign.name }} Emails — Cold Email Generator{% endblock %}
+{% block page_title %}📧 {{ campaign.name }}{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+  <a href="/campaigns" class="btn btn-secondary btn-sm">← Back to Campaigns</a>
+</div>
+
+{% if emails %}
+<div class="email-list">
+  {% for email in emails %}
+  <div class="email-card card">
+    <div class="email-card-header">
+      <div>
+        <strong>{{ email.lead_name or 'Unknown' }}</strong>
+        {% if email.lead_email %}<span class="text-muted">&lt;{{ email.lead_email }}&gt;</span>{% endif %}
+        {% if email.company %}<span class="badge badge-neutral">{{ email.company }}</span>{% endif %}
+      </div>
+      <div class="email-status">
+        {% if email.opened %}<span class="badge badge-success">Opened</span>{% endif %}
+        {% if email.replied %}<span class="badge badge-primary">Replied</span>{% endif %}
+      </div>
+    </div>
+    <div class="email-subject">📌 {{ email.subject }}</div>
+    <div class="email-body-preview">{{ email.body[:300] }}{% if email.body|length > 300 %}…{% endif %}</div>
+    <div class="email-actions">
+      <a href="/export/{{ email.id }}/txt" class="btn btn-xs">📄 TXT</a>
+      <a href="/export/{{ email.id }}/html" class="btn btn-xs">🌐 HTML</a>
+      <a href="/export/{{ email.id }}/pdf" class="btn btn-xs">📑 PDF</a>
+      {% if not email.opened %}
+      <button class="btn btn-xs btn-secondary" onclick="markOpened({{ email.id }}, this)">Mark Opened</button>
+      {% endif %}
+      {% if not email.replied %}
+      <button class="btn btn-xs btn-secondary" onclick="markReplied({{ email.id }}, this)">Mark Replied</button>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card empty-state">
+  <p>No emails generated yet. Go back and run the campaign.</p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  async function markOpened(id, btn) {
+    const res = await fetch(`/analytics/mark-opened/${id}`, { method: 'POST' });
+    const data = await res.json();
+    if (data.success) { btn.remove(); showMessage('Marked as opened.', 'success'); }
+  }
+  async function markReplied(id, btn) {
+    const res = await fetch(`/analytics/mark-replied/${id}`, { method: 'POST' });
+    const data = await res.json();
+    if (data.success) { btn.remove(); showMessage('Marked as replied.', 'success'); }
+  }
+</script>
+{% endblock %}

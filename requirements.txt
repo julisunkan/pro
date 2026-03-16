@@ -1,0 +1,14 @@
+flask
+groq
+requests
+beautifulsoup4
+fpdf2
+pandas
+pillow
+beautifulsoup4
+flask
+fpdf2
+pandas
+pillow
+requests
+gunicorn
