@@ -10,10 +10,9 @@ from models.db import init_db, get_db
 from services.ai_service import generate_email
 from services.lead_scraper import scrape_website
 from services.personalization import generate_personalized_intro
-from services.campaign_service import create_campaign, get_campaign_leads
+from services.campaign_service import create_campaign
 from services.analytics import get_campaign_analytics
 from services.export_service import export_email_txt, export_email_html, export_email_pdf, export_email_docx
-import config
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'cold-email-secret-key-2024')

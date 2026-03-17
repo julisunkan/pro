@@ -144,6 +144,7 @@
         const res = await fetch(`/campaigns/${id}/run`, { method: 'POST' });
         const data = await res.json();
         showMessage(data.message, data.success ? 'success' : 'error');
+        if (data.success) setTimeout(() => location.reload(), 1500);
       } catch {
         showMessage('Campaign run failed.', 'error');
       } finally {

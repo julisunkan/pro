@@ -49,14 +49,20 @@
 {% block scripts %}
 <script>
   async function markOpened(id, btn) {
-    const res = await fetch(`/analytics/mark-opened/${id}`, { method: 'POST' });
-    const data = await res.json();
-    if (data.success) { btn.remove(); showMessage('Marked as opened.', 'success'); }
+    try {
+      const res = await fetch(`/analytics/mark-opened/${id}`, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) { btn.remove(); showMessage('Marked as opened.', 'success'); }
+      else { showMessage('Failed to mark as opened.', 'error'); }
+    } catch { showMessage('Network error.', 'error'); }
   }
   async function markReplied(id, btn) {
-    const res = await fetch(`/analytics/mark-replied/${id}`, { method: 'POST' });
-    const data = await res.json();
-    if (data.success) { btn.remove(); showMessage('Marked as replied.', 'success'); }
+    try {
+      const res = await fetch(`/analytics/mark-replied/${id}`, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) { btn.remove(); showMessage('Marked as replied.', 'success'); }
+      else { showMessage('Failed to mark as replied.', 'error'); }
+    } catch { showMessage('Network error.', 'error'); }
   }
 </script>
 {% endblock %}

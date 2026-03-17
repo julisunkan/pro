@@ -1,5 +1,4 @@
 import requests
-import config
 from services.settings_service import get_api_key, get_model
 
 

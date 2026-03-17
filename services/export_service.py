@@ -1,3 +1,4 @@
+import io
 from fpdf import FPDF
 from docx import Document
 from docx.shared import Pt, RGBColor
@@ -143,8 +144,7 @@ def export_email_docx(subject: str, body: str):
         for run in p.runs:
             run.font.size = Pt(11)
 
-    import io as _io
-    buf = _io.BytesIO()
+    buf = io.BytesIO()
     doc.save(buf)
     buf.seek(0)
     mime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'

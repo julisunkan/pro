@@ -133,7 +133,6 @@
         document.getElementById('export-buttons').style.display = 'flex';
 
         showMessage('Email generated successfully!', 'success');
-        setTimeout(() => location.reload(), 3000);
       } else {
         showMessage(data.message || 'Generation failed.', 'error');
       }
