@@ -125,19 +125,31 @@
   });
 
   async function runCampaign(id, btn) {
-    if (!confirm('Run this campaign? This will generate emails for all leads (may take a minute).')) return;
-    btn.disabled = true;
-    btn.textContent = '⏳ Running...';
-    try {
-      const res = await fetch(`/campaigns/${id}/run`, { method: 'POST' });
-      const data = await res.json();
-      showMessage(data.message, data.success ? 'success' : 'error');
-    } catch {
-      showMessage('Campaign run failed.', 'error');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = '▶ Run';
-    }
+    const cell = btn.parentElement;
+    const original = cell.innerHTML;
+
+    cell.innerHTML = `
+      <span style="font-size:0.85rem; margin-right:6px;">Generate emails for all leads?</span>
+      <button class="btn btn-primary btn-xs" id="confirm-run-${id}">✔ Yes, Run</button>
+      <button class="btn btn-secondary btn-xs" id="cancel-run-${id}">✖ Cancel</button>
+    `;
+
+    document.getElementById(`cancel-run-${id}`).addEventListener('click', () => {
+      cell.innerHTML = original;
+    });
+
+    document.getElementById(`confirm-run-${id}`).addEventListener('click', async () => {
+      cell.innerHTML = `<span style="font-size:0.85rem;">⏳ Running...</span>`;
+      try {
+        const res = await fetch(`/campaigns/${id}/run`, { method: 'POST' });
+        const data = await res.json();
+        showMessage(data.message, data.success ? 'success' : 'error');
+      } catch {
+        showMessage('Campaign run failed.', 'error');
+      } finally {
+        cell.innerHTML = original;
+      }
+    });
   }
 </script>
 {% endblock %}

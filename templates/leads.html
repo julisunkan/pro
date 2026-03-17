@@ -97,13 +97,30 @@ John Doe,john@acme.com,Acme Corp,https://acme.com</pre>
   });
 
   async function deleteLead(id) {
-    if (!confirm('Delete this lead?')) return;
-    const res = await fetch(`/leads/delete/${id}`, { method: 'POST' });
-    const data = await res.json();
-    if (data.success) {
-      document.getElementById(`lead-row-${id}`)?.remove();
-      showMessage('Lead deleted.', 'success');
-    }
+    const cell = document.querySelector(`#lead-row-${id} td:last-child`);
+    const original = cell.innerHTML;
+
+    cell.innerHTML = `
+      <span style="font-size:0.85rem; margin-right:6px;">Delete this lead?</span>
+      <button class="btn btn-danger btn-xs" id="confirm-del-${id}">✔ Yes</button>
+      <button class="btn btn-secondary btn-xs" id="cancel-del-${id}">✖ No</button>
+    `;
+
+    document.getElementById(`cancel-del-${id}`).addEventListener('click', () => {
+      cell.innerHTML = original;
+    });
+
+    document.getElementById(`confirm-del-${id}`).addEventListener('click', async () => {
+      const res = await fetch(`/leads/delete/${id}`, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById(`lead-row-${id}`)?.remove();
+        showMessage('Lead deleted.', 'success');
+      } else {
+        cell.innerHTML = original;
+        showMessage('Failed to delete lead.', 'error');
+      }
+    });
   }
 </script>
 {% endblock %}
